@@ -23,7 +23,7 @@ export default function DarkWrapper({ children }) {
         borderRadius,
         position: "relative",
         zIndex: 10,
-        marginTop: "-80px",           // glue to hero bottom
+        marginTop: "-2px",           // glue to hero bottom
         overflow: "hidden",
       }}
     >
