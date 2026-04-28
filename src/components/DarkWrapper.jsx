@@ -13,8 +13,6 @@ export default function DarkWrapper({ children }) {
 
   const borderRadius = useTransform(smooth, [0, 1], ["52px 52px 0 0", "0px 0px 0 0"])
 
-  const y = useTransform(smooth, [0, 1], [40, 0])
-
   return (
     <motion.div
       ref={ref}
@@ -23,13 +21,14 @@ export default function DarkWrapper({ children }) {
         borderRadius,
         position: "relative",
         zIndex: 10,
-        marginTop: "-2px",           // glue to hero bottom
+        // FIX: was marginTop: "-2px" which caused black to bleed into hero
+        // on screens shorter than the design target. Remove it entirely.
+        // The hero being exactly 100dvh handles the join seamlessly.
+        marginTop: 0,
         overflow: "hidden",
       }}
     >
-      <motion.div style={{ y }}>
-        {children}
-      </motion.div>
+      {children}
     </motion.div>
   )
 }

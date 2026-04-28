@@ -35,7 +35,6 @@ function useTypewriter(words, speed = 72, pause = 2000) {
   return text
 }
 
-// ── 5 commands, one terse output each — total ~3-4 s ─────────────────────────
 const TERMINAL_STEPS = [
   {
     cmd: "init portfolio.config",
@@ -83,7 +82,6 @@ function TerminalIntro({ onDone }) {
     let cancelled = false
     const sleep = ms => new Promise(r => setTimeout(r, ms))
 
-    // type speed 32ms/char — fast but readable
     async function typeCmd(text, speed = 32) {
       for (let i = 0; i <= text.length; i++) {
         if (cancelled) return
@@ -109,7 +107,6 @@ function TerminalIntro({ onDone }) {
         if (step.isLaunch) {
           await sleep(100)
           setProgress(0)
-          // 100 ticks × 10 ms = 1 s for progress bar
           for (let p = 1; p <= 100; p++) {
             if (cancelled) return
             setProgress(p)
@@ -156,7 +153,6 @@ function TerminalIntro({ onDone }) {
             borderRadius: 16,
             border: "1px solid #2a2a28",
           }}>
-            {/* Title bar */}
             <div style={{
               display: "flex", alignItems: "center", gap: 8,
               padding: "13px 18px",
@@ -182,7 +178,6 @@ function TerminalIntro({ onDone }) {
               </span>
             </div>
 
-            {/* Terminal body */}
             <div style={{
               padding: "1.6rem 2rem 1.8rem",
               minHeight: 300,
@@ -207,7 +202,6 @@ function TerminalIntro({ onDone }) {
                 </div>
               ))}
 
-              {/* Active typing line */}
               {cmdText !== "" && (
                 <div>
                   <span style={{ color: "#0D9488" }}>{"~ $ "}</span>
@@ -223,7 +217,6 @@ function TerminalIntro({ onDone }) {
                 </div>
               )}
 
-              {/* Progress bar */}
               {progress >= 0 && (
                 <div style={{ paddingLeft: "1.6rem", marginTop: "0.2rem" }}>
                   <span style={{ color: "#0D9488" }}>{bar}</span>
@@ -263,7 +256,17 @@ export default function Hero({ onIntroComplete }) {
   return (
     <section
       id="home"
-      style={{ position: "relative", minHeight: "100vh", background: "#F2EFE9", overflow: "hidden" }}
+      style={{
+        position: "relative",
+        // KEY FIX: use 100dvh instead of minHeight: 100vh
+        // dvh = dynamic viewport height — accounts for mobile browser bars,
+        // and is exactly one screen on every device/zoom level.
+        // minHeight could overflow and let DarkWrapper show behind.
+        height: "100dvh",
+        background: "#F2EFE9",
+        // overflow hidden so nothing inside can push height larger than dvh
+        overflow: "hidden",
+      }}
     >
       <TerminalIntro
         onDone={() => {
@@ -273,11 +276,18 @@ export default function Hero({ onIntroComplete }) {
       />
 
       <div style={{
-        minHeight: "100vh", display: "flex", flexDirection: "column",
-        justifyContent: "center", padding: "6rem 2.5rem 8rem",
-        maxWidth: 1200, margin: "0 auto", position: "relative",
+        // Match the section height exactly — flex column centering
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        padding: "6rem 2.5rem 8rem",
+        maxWidth: 1200,
+        margin: "0 auto",
+        position: "relative",
       }}>
 
+        {/* Badge */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={introDone ? { opacity: 1, y: 0 } : {}}
@@ -302,6 +312,7 @@ export default function Hero({ onIntroComplete }) {
           </span>
         </motion.div>
 
+        {/* Greeting */}
         <motion.p
           initial={{ opacity: 0, y: 14 }}
           animate={introDone ? { opacity: 1, y: 0 } : {}}
@@ -314,6 +325,7 @@ export default function Hero({ onIntroComplete }) {
           Hi there, I&apos;m
         </motion.p>
 
+        {/* Name */}
         <div style={{ overflow: "hidden", lineHeight: 1 }}>
           <motion.h1
             initial={{ y: "108%" }}
@@ -344,6 +356,7 @@ export default function Hero({ onIntroComplete }) {
           </motion.h1>
         </div>
 
+        {/* Typewriter + bio */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={introDone ? { opacity: 1, y: 0 } : {}}
@@ -371,6 +384,7 @@ export default function Hero({ onIntroComplete }) {
           </p>
         </motion.div>
 
+        {/* CTAs */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={introDone ? { opacity: 1, y: 0 } : {}}
@@ -409,6 +423,7 @@ export default function Hero({ onIntroComplete }) {
           ))}
         </motion.div>
 
+        {/* Stats */}
         <motion.div
           initial={{ opacity: 0, y: 22 }}
           animate={introDone ? { opacity: 1, y: 0 } : {}}
@@ -435,6 +450,7 @@ export default function Hero({ onIntroComplete }) {
           ))}
         </motion.div>
 
+        {/* Code block — desktop only, absolutely positioned */}
         <motion.pre
           className="code-block"
           initial={{ opacity: 0, x: 28 }}
@@ -455,6 +471,7 @@ export default function Hero({ onIntroComplete }) {
   available = True
 }`}</motion.pre>
 
+        {/* Scroll cue */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={introDone ? { opacity: 1 } : {}}
