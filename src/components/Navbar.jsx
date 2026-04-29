@@ -66,12 +66,12 @@ export default function Navbar({ introComplete }) {
         <div
           style={{
             height: 64,
-            maxWidth: 1200,
+            maxWidth: 1600,
             margin: "0 auto",
-            display: "grid",
-            gridTemplateColumns: "1fr auto 1fr",
+            display: "flex",
             alignItems: "center",
-            padding: "0 2rem",
+            justifyContent: "space-between",
+            padding: "0 1.25rem",
           }}
         >
           {/* Logo */}
@@ -82,6 +82,7 @@ export default function Navbar({ introComplete }) {
               alignItems: "center",
               gap: 10,
               textDecoration: "none",
+              flexShrink: 0,
             }}
           >
             <motion.div
@@ -115,10 +116,10 @@ export default function Navbar({ introComplete }) {
             </motion.span>
           </a>
 
-          {/* Desktop nav links — hidden below 768px */}
+          {/* Desktop nav links */}
           <div
-            style={{ display: "flex", alignItems: "center", gap: "1.8rem" }}
             className="nav-links-desktop"
+            style={{ display: "flex", alignItems: "center", gap: "1.8rem" }}
           >
             {LINKS.map(({ label, href }) => (
               <motion.a
@@ -142,13 +143,13 @@ export default function Navbar({ introComplete }) {
             ))}
           </div>
 
-          {/* Desktop CTA + Mobile hamburger */}
+          {/* Right side: Hire Me (desktop) + Hamburger (mobile) */}
           <div
             style={{
               display: "flex",
-              justifyContent: "flex-end",
               alignItems: "center",
               gap: 16,
+              flexShrink: 0,
             }}
           >
             {/* Hire Me — desktop only */}
@@ -236,7 +237,7 @@ export default function Navbar({ introComplete }) {
                 style={{
                   borderTop: "1px solid",
                   borderTopColor: border,
-                  padding: "1.4rem 2rem 2rem",
+                  padding: "1.4rem 1.25rem 2rem",
                 }}
               >
                 <div

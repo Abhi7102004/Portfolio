@@ -144,7 +144,7 @@ function TerminalIntro({ onDone }) {
             position: "fixed", inset: 0, zIndex: 200,
             background: "#0C0C0B",
             display: "flex", alignItems: "center", justifyContent: "center",
-            padding: "1.5rem",
+            padding: "1rem",
           }}
         >
           <div style={{
@@ -258,13 +258,8 @@ export default function Hero({ onIntroComplete }) {
       id="home"
       style={{
         position: "relative",
-        // KEY FIX: use 100dvh instead of minHeight: 100vh
-        // dvh = dynamic viewport height — accounts for mobile browser bars,
-        // and is exactly one screen on every device/zoom level.
-        // minHeight could overflow and let DarkWrapper show behind.
         height: "100dvh",
         background: "#F2EFE9",
-        // overflow hidden so nothing inside can push height larger than dvh
         overflow: "hidden",
       }}
     >
@@ -276,15 +271,17 @@ export default function Hero({ onIntroComplete }) {
       />
 
       <div style={{
-        // Match the section height exactly — flex column centering
         height: "100%",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
-        padding: "6rem 2.5rem 8rem",
-        maxWidth: 1200,
+        /* Responsive padding: small on mobile, moderate on tablet, comfortable on desktop */
+        padding: "6rem 1.25rem 5rem",
+        maxWidth: 1600,
         margin: "0 auto",
         position: "relative",
+        boxSizing: "border-box",
+        width: "100%",
       }}>
 
         {/* Badge */}
@@ -295,18 +292,20 @@ export default function Hero({ onIntroComplete }) {
           style={{
             display: "inline-flex", alignItems: "center", gap: 8,
             border: "1px solid rgba(13,148,136,0.45)", borderRadius: 999,
-            padding: "0.38rem 1rem", marginBottom: "2rem", width: "fit-content",
+            padding: "0.38rem 0.85rem", marginBottom: "1.5rem", width: "fit-content",
             background: "rgba(13,148,136,0.07)",
+            maxWidth: "100%",
           }}
         >
           <motion.span
             animate={{ opacity: [1, 0.15, 1] }}
             transition={{ duration: 2, repeat: Infinity }}
-            style={{ width: 6, height: 6, borderRadius: "50%", background: "#0D9488", display: "inline-block" }}
+            style={{ width: 6, height: 6, borderRadius: "50%", background: "#0D9488", display: "inline-block", flexShrink: 0 }}
           />
           <span style={{
-            fontFamily: "'Space Mono',monospace", fontSize: "0.6rem",
-            letterSpacing: "0.22em", textTransform: "uppercase", color: "#0D9488", fontWeight: 700,
+            fontFamily: "'Space Mono',monospace", fontSize: "0.58rem",
+            letterSpacing: "0.18em", textTransform: "uppercase", color: "#0D9488", fontWeight: 700,
+            whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
           }}>
             Open to Work · SDE · Backend · Fintech
           </span>
@@ -319,7 +318,7 @@ export default function Hero({ onIntroComplete }) {
           transition={{ duration: 0.45, delay: 0.12, ease: EASE }}
           style={{
             fontFamily: "'Space Mono',monospace", fontSize: "0.72rem",
-            letterSpacing: "0.28em", textTransform: "uppercase", color: "#9a9a94", marginBottom: "0.5rem",
+            letterSpacing: "0.28em", textTransform: "uppercase", color: "#9a9a94", marginBottom: "0.4rem",
           }}
         >
           Hi there, I&apos;m
@@ -333,23 +332,26 @@ export default function Hero({ onIntroComplete }) {
             transition={{ duration: 0.9, delay: 0.22, ease: EXPO }}
             style={{
               fontFamily: "'Syne',sans-serif", fontWeight: 800,
-              fontSize: "clamp(2.8rem, 7vw, 5.8rem)",
+              /* Key fix: clamp starts from a larger min so name doesn't get clipped on mobile */
+              fontSize: "clamp(3rem, 12vw, 5.8rem)",
               lineHeight: 0.92, letterSpacing: "-0.03em", color: "#0E0E0D",
+              margin: 0,
             }}
           >
             Abhishek
           </motion.h1>
         </div>
 
-        <div style={{ overflow: "hidden", lineHeight: 1, marginBottom: "2rem" }}>
+        <div style={{ overflow: "hidden", lineHeight: 1, marginBottom: "1.75rem" }}>
           <motion.h1
             initial={{ y: "108%" }}
             animate={introDone ? { y: 0 } : {}}
             transition={{ duration: 0.9, delay: 0.34, ease: EXPO }}
             style={{
               fontFamily: "'Instrument Serif',serif", fontWeight: 400, fontStyle: "italic",
-              fontSize: "clamp(2.8rem, 7vw, 5.8rem)",
+              fontSize: "clamp(3rem, 12vw, 5.8rem)",
               lineHeight: 0.92, letterSpacing: "-0.01em", color: "#0D9488",
+              margin: 0,
             }}
           >
             Yadav.
@@ -361,7 +363,7 @@ export default function Hero({ onIntroComplete }) {
           initial={{ opacity: 0, y: 16 }}
           animate={introDone ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.55, delay: 0.52, ease: EASE }}
-          style={{ display: "flex", flexWrap: "wrap", gap: "2.5rem", alignItems: "flex-start", marginBottom: "2.5rem" }}
+          style={{ display: "flex", flexWrap: "wrap", gap: "1.5rem", alignItems: "flex-start", marginBottom: "2rem" }}
         >
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
@@ -379,7 +381,7 @@ export default function Hero({ onIntroComplete }) {
             </div>
             <div style={{ width: 36, height: 1, background: "#0E0E0D", opacity: 0.15 }} />
           </div>
-          <p style={{ fontFamily: "'Syne',sans-serif", fontSize: "0.93rem", lineHeight: 1.8, color: "#6B6B65", maxWidth: 400 }}>
+          <p style={{ fontFamily: "'Syne',sans-serif", fontSize: "0.93rem", lineHeight: 1.8, color: "#6B6B65", maxWidth: 400, margin: 0 }}>
             {ME.bio}
           </p>
         </motion.div>
@@ -389,7 +391,7 @@ export default function Hero({ onIntroComplete }) {
           initial={{ opacity: 0, y: 16 }}
           animate={introDone ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.66, ease: EASE }}
-          style={{ display: "flex", flexWrap: "wrap", gap: "0.85rem", marginBottom: "4.5rem" }}
+          style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem", marginBottom: "3rem" }}
         >
           {BTNS.map(btn => (
             <a
@@ -400,7 +402,7 @@ export default function Hero({ onIntroComplete }) {
               style={{
                 fontFamily: "'Syne',sans-serif", fontSize: "0.78rem", fontWeight: 700,
                 letterSpacing: "0.12em", textTransform: "uppercase", textDecoration: "none",
-                padding: btn.ghost ? "0.85rem 0.5rem" : "0.85rem 2rem",
+                padding: btn.ghost ? "0.85rem 0.5rem" : "0.85rem 1.6rem",
                 background: btn.solid ? "#0E0E0D" : "transparent",
                 color: btn.ghost ? "#0E0E0D" : btn.solid ? "#F2EFE9" : "#0E0E0D",
                 border: btn.ghost ? "none" : btn.solid ? "none" : "1.5px solid #0E0E0D",
@@ -428,7 +430,7 @@ export default function Hero({ onIntroComplete }) {
           initial={{ opacity: 0, y: 22 }}
           animate={introDone ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.82, ease: EASE }}
-          style={{ display: "flex", flexWrap: "wrap", gap: "3rem" }}
+          style={{ display: "flex", flexWrap: "wrap", gap: "2rem" }}
         >
           {ME.stats.map((s, i) => (
             <motion.div
@@ -437,7 +439,7 @@ export default function Hero({ onIntroComplete }) {
               animate={introDone ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.4, delay: 0.9 + i * 0.09 }}
             >
-              <div style={{ fontFamily: "'Syne',sans-serif", fontSize: "clamp(1.4rem,2.5vw,2rem)", fontWeight: 800, color: "#0E0E0D", lineHeight: 1 }}>
+              <div style={{ fontFamily: "'Syne',sans-serif", fontSize: "clamp(1.3rem,4vw,2rem)", fontWeight: 800, color: "#0E0E0D", lineHeight: 1 }}>
                 {s.val}
               </div>
               <div style={{ fontFamily: "'Space Mono',monospace", fontSize: "0.57rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "#0D9488", marginTop: 5 }}>
@@ -457,10 +459,11 @@ export default function Hero({ onIntroComplete }) {
           animate={introDone ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.7, delay: 1.05, ease: EASE }}
           style={{
-            position: "absolute", right: "2%", top: "50%", transform: "translateY(-50%)",
+            position: "absolute", right: "0", top: "50%", transform: "translateY(-50%)",
             fontFamily: "'Space Mono',monospace", fontSize: "0.68rem", lineHeight: 2.1,
             color: "#9a9a94", background: "rgba(14,14,13,0.04)",
             border: "1px solid rgba(14,14,13,0.08)", padding: "1.4rem 1.8rem",
+            margin: 0,
           }}
         >{`class Engineer {
   name      = "Abhishek"
@@ -477,7 +480,7 @@ export default function Hero({ onIntroComplete }) {
           animate={introDone ? { opacity: 1 } : {}}
           transition={{ duration: 0.5, delay: 1.4 }}
           style={{
-            position: "absolute", bottom: 28, left: "50%", transform: "translateX(-50%)",
+            position: "absolute", bottom: 20, left: "50%", transform: "translateX(-50%)",
             display: "flex", flexDirection: "column", alignItems: "center", gap: 8,
           }}
         >
@@ -493,8 +496,23 @@ export default function Hero({ onIntroComplete }) {
       </div>
 
       <style>{`
-        .code-block { display: none; }
-        @media (min-width: 1100px) { .code-block { display: block !important; } }
+        /* Code block: only show when there's enough horizontal space */
+        .code-block { display: none !important; }
+        @media (min-width: 1000px) { .code-block { display: block !important; } }
+
+        /* Ensure section padding scales nicely across breakpoints */
+        @media (min-width: 640px) {
+          #home > div {
+            padding-left: 2rem !important;
+            padding-right: 2rem !important;
+          }
+        }
+        @media (min-width: 1000px) {
+          #home > div {
+            padding-left: 2.5rem !important;
+            padding-right: 2.5rem !important;
+          }
+        }
       `}</style>
     </section>
   )

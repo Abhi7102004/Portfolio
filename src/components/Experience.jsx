@@ -1,9 +1,23 @@
-import React, { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import React from "react";
+import { motion } from "framer-motion";
+import useSectionWipe from "../hooks/useSectionWipe";
+import useSectionParallax from "../hooks/useSectionParallax";
 import { ME } from "../data";
+import {
+  VIEWPORT,
+  labelReveal,
+  headingReveal,
+  fadeUp,
+  stagger,
+  cardItem,
+  listItem,
+  fadeItem,
+  hoverLift,
+  HOVER_BORDER,
+  REST_BORDER,
+} from "../utils/animations";
 
-const EXPO = [0.25, 0.46, 0.45, 0.94];
-
+// ─── Pine Labs logo badge ─────────────────────────────────
 function PineLabsBadge() {
   return (
     <div
@@ -52,10 +66,79 @@ function PineLabsBadge() {
   );
 }
 
+// ─── Single tech tag with hover scale ────────────────────
+function TechTag({ label }) {
+  return (
+    <motion.span
+      variants={fadeItem}
+      whileHover={{
+        scale: 1.06,
+        borderColor: "rgba(13,148,136,0.5)",
+        color: "#0D9488",
+        transition: { duration: 0.18 },
+      }}
+      style={{
+        fontFamily: "'Space Mono',monospace",
+        fontSize: "0.65rem",
+        letterSpacing: "0.08em",
+        textTransform: "uppercase",
+        border: "1px solid #2a2a28",
+        color: "#8A8A84",
+        padding: "5px 12px",
+        background: "rgba(255,255,255,0.03)",
+        cursor: "default",
+        display: "inline-block",
+        transition: "color 0.18s, border-color 0.18s",
+      }}
+    >
+      {label}
+    </motion.span>
+  );
+}
+
+// ─── Single contribution bullet ──────────────────────────
+function Highlight({ text }) {
+  return (
+    <motion.li
+      variants={listItem}
+      style={{ display: "flex", gap: 14, alignItems: "flex-start" }}
+    >
+      <motion.span
+        style={{
+          color: "#0D9488",
+          fontSize: "0.8rem",
+          marginTop: 5,
+          flexShrink: 0,
+        }}
+        whileHover={{ x: 3, transition: { duration: 0.15 } }}
+      >
+        ▸
+      </motion.span>
+      <span
+        style={{
+          fontFamily: "'Syne',sans-serif",
+          fontSize: "clamp(0.88rem, 2vw, 1rem)",
+          color: "#D0CCC6",
+          lineHeight: 1.82,
+        }}
+      >
+        {text}
+      </span>
+    </motion.li>
+  );
+}
+
+// ─────────────────────────────────────────────────────────
 export default function Experience() {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const sectionRef = useSectionWipe({ start: "top 88%" });
+  const { ref: paraRef, y } = useSectionParallax({ speed: 0.08 });
   const exp = ME.experience[0];
+
+  // Merge the two refs into one element using a callback ref:
+  function mergeRefs(el) {
+    sectionRef.current = el;
+    paraRef.current = el;
+  }
 
   return (
     <>
@@ -74,39 +157,31 @@ export default function Experience() {
           align-items: center;
         }
         @media (max-width: 767px) {
-          .exp-grid {
-            grid-template-columns: 1fr;
-            gap: 0;
-          }
+          .exp-grid { grid-template-columns: 1fr; gap: 0; }
           .exp-contributions {
-            border-left: none;
-            padding-left: 0;
+            border-left: none; padding-left: 0;
             border-top: 1px solid #2e2e2c;
-            padding-top: 1.8rem;
-            margin-top: 1.8rem;
+            padding-top: 1.8rem; margin-top: 1.8rem;
           }
-          .edu-row {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 1.2rem !important;
-          }
+          .edu-row { flex-direction: column; align-items: flex-start; gap: 1.2rem !important; }
         }
       `}</style>
 
       <section
         id="experience"
-        ref={ref}
         style={{
           background: "#111110",
           padding: "clamp(3.5rem, 8vw, 7rem) clamp(1.2rem, 5vw, 2.5rem)",
           borderTop: "1px solid #2a2a28",
         }}
       >
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ maxWidth: 1550, margin: "0 auto" }}>
+          {/* ── Label ─────────────────────────────────── */}
           <motion.p
-            initial={{ opacity: 0, x: -16 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.5 }}
+            variants={labelReveal}
+            initial="hidden"
+            whileInView="show"
+            viewport={VIEWPORT}
             style={{
               fontFamily: "'Space Mono',monospace",
               fontSize: "0.82rem",
@@ -119,10 +194,12 @@ export default function Experience() {
             Experience
           </motion.p>
 
+          {/* ── Heading ───────────────────────────────── */}
           <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.75, delay: 0.08, ease: EXPO }}
+            variants={headingReveal}
+            initial="hidden"
+            whileInView="show"
+            viewport={VIEWPORT}
             style={{
               fontFamily: "'Syne',sans-serif",
               fontWeight: 800,
@@ -147,20 +224,37 @@ export default function Experience() {
             </span>
           </motion.h2>
 
+          {/* ── Experience card ───────────────────────── */}
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.7, delay: 0.18, ease: EXPO }}
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="show"
+            viewport={VIEWPORT}
+            {...hoverLift}
             style={{
-              border: "1px solid #2e2e2c",
+              border: `1px solid ${REST_BORDER}`,
               background: "#161614",
               padding: "clamp(1.4rem, 4vw, 2.8rem)",
+              transition: "border-color 0.25s",
             }}
+            onHoverStart={(e) =>
+              (e.currentTarget.style.borderColor = HOVER_BORDER)
+            }
+            onHoverEnd={(e) =>
+              (e.currentTarget.style.borderColor = REST_BORDER)
+            }
           >
             <div className="exp-grid">
-              {/* Left: company info */}
-              <div>
-                <div
+              {/* Left column — company info */}
+              <motion.div
+                variants={stagger(0.08, 0.1)}
+                initial="hidden"
+                whileInView="show"
+                viewport={VIEWPORT}
+              >
+                {/* Company header */}
+                <motion.div
+                  variants={cardItem}
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -192,8 +286,11 @@ export default function Experience() {
                       {exp.location}
                     </div>
                   </div>
-                </div>
-                <div
+                </motion.div>
+
+                {/* Role + period */}
+                <motion.div
+                  variants={cardItem}
                   style={{
                     fontFamily: "'Syne',sans-serif",
                     fontSize: "0.98rem",
@@ -203,8 +300,9 @@ export default function Experience() {
                   }}
                 >
                   {exp.role}
-                </div>
-                <div
+                </motion.div>
+                <motion.div
+                  variants={cardItem}
                   style={{
                     fontFamily: "'Space Mono',monospace",
                     fontSize: "0.7rem",
@@ -213,31 +311,29 @@ export default function Experience() {
                   }}
                 >
                   {exp.period}
-                </div>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
-                  {exp.tech.map((t) => (
-                    <span
-                      key={t}
-                      style={{
-                        fontFamily: "'Space Mono',monospace",
-                        fontSize: "0.65rem",
-                        letterSpacing: "0.08em",
-                        textTransform: "uppercase",
-                        border: "1px solid #2a2a28",
-                        color: "#8A8A84",
-                        padding: "5px 12px",
-                        background: "rgba(255,255,255,0.03)",
-                      }}
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              </div>
+                </motion.div>
 
-              {/* Right: contributions */}
+                {/* Tech tags — staggered */}
+                <motion.div
+                  variants={stagger(0.06, 0.05)}
+                  initial="hidden"
+                  whileInView="show"
+                  viewport={VIEWPORT}
+                  style={{ display: "flex", flexWrap: "wrap", gap: 7 }}
+                >
+                  {exp.tech.map((t) => (
+                    <TechTag key={t} label={t} />
+                  ))}
+                </motion.div>
+              </motion.div>
+
+              {/* Right column — contributions */}
               <div className="exp-contributions">
-                <p
+                <motion.p
+                  variants={labelReveal}
+                  initial="hidden"
+                  whileInView="show"
+                  viewport={VIEWPORT}
                   style={{
                     fontFamily: "'Space Mono',monospace",
                     fontSize: "0.70rem",
@@ -248,8 +344,13 @@ export default function Experience() {
                   }}
                 >
                   Key Contributions
-                </p>
-                <ul
+                </motion.p>
+
+                <motion.ul
+                  variants={stagger(0.1, 0.15)}
+                  initial="hidden"
+                  whileInView="show"
+                  viewport={VIEWPORT}
                   style={{
                     listStyle: "none",
                     display: "flex",
@@ -258,58 +359,40 @@ export default function Experience() {
                   }}
                 >
                   {exp.highlights.map((h, i) => (
-                    <motion.li
-                      key={i}
-                      initial={{ opacity: 0, x: 16 }}
-                      animate={inView ? { opacity: 1, x: 0 } : {}}
-                      transition={{ duration: 0.5, delay: 0.35 + i * 0.1 }}
-                      style={{
-                        display: "flex",
-                        gap: 14,
-                        alignItems: "flex-start",
-                      }}
-                    >
-                      <span
-                        style={{
-                          color: "#0D9488",
-                          fontSize: "0.8rem",
-                          marginTop: 5,
-                          flexShrink: 0,
-                        }}
-                      >
-                        ▸
-                      </span>
-                      <span
-                        style={{
-                          fontFamily: "'Syne',sans-serif",
-                          fontSize: "clamp(0.88rem, 2vw, 1rem)",
-                          color: "#D0CCC6",
-                          lineHeight: 1.82,
-                        }}
-                      >
-                        {h}
-                      </span>
-                    </motion.li>
+                    <Highlight key={i} text={h} />
                   ))}
-                </ul>
+                </motion.ul>
               </div>
             </div>
           </motion.div>
 
-          {/* Education */}
+          {/* ── Education card ─────────────────────────── */}
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.55 }}
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="show"
+            viewport={VIEWPORT}
+            {...hoverLift}
             style={{
               marginTop: "1.5rem",
-              border: "1px solid #2e2e2c",
+              border: `1px solid ${REST_BORDER}`,
               background: "#161614",
               padding: "clamp(1.4rem, 4vw, 2rem) clamp(1.2rem, 4vw, 2.8rem)",
+              transition: "border-color 0.25s",
             }}
+            onHoverStart={(e) =>
+              (e.currentTarget.style.borderColor = HOVER_BORDER)
+            }
+            onHoverEnd={(e) =>
+              (e.currentTarget.style.borderColor = REST_BORDER)
+            }
           >
-            <div
+            <motion.div
               className="edu-row"
+              variants={stagger(0.1, 0.05)}
+              initial="hidden"
+              whileInView="show"
+              viewport={VIEWPORT}
               style={{
                 display: "flex",
                 justifyContent: "space-between",
@@ -317,7 +400,11 @@ export default function Experience() {
                 gap: "1rem",
               }}
             >
-              <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
+              {/* School info */}
+              <motion.div
+                variants={cardItem}
+                style={{ display: "flex", alignItems: "center", gap: 18 }}
+              >
                 <div
                   style={{
                     width: 50,
@@ -359,8 +446,13 @@ export default function Experience() {
                     {ME.education.degree}
                   </div>
                 </div>
-              </div>
-              <div style={{ display: "flex", gap: "2.5rem" }}>
+              </motion.div>
+
+              {/* Stats */}
+              <motion.div
+                variants={cardItem}
+                style={{ display: "flex", gap: "2.5rem" }}
+              >
                 <div style={{ textAlign: "right" }}>
                   <div
                     style={{
@@ -406,8 +498,8 @@ export default function Experience() {
                     B.Tech CSE
                   </div>
                 </div>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           </motion.div>
         </div>
       </section>

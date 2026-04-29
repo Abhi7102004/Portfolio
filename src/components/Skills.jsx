@@ -540,7 +540,7 @@ export default function Skills() {
         borderTop: "1px solid #1e1e1c",
       }}
     >
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+      <div style={{ maxWidth: 1550, margin: "0 auto" }}>
         <motion.p
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}
