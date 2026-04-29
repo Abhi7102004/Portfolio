@@ -27,10 +27,17 @@ body {
   overflow-x: hidden;
 }
 
-/* ── scrollbar ── */
+/* ── Custom cursor — hide default on pointer-fine (desktop) only ── */
+@media (pointer: fine) {
+  *, *::before, *::after {
+    cursor: none !important;
+  }
+}
+
+/* ── Scrollbar ── */
 ::-webkit-scrollbar        { width: 3px; }
 ::-webkit-scrollbar-track  { background: var(--dark); }
 ::-webkit-scrollbar-thumb  { background: var(--teal); border-radius: 2px; }
 
-/* ── selection ── */
+/* ── Selection ── */
 ::selection { background: var(--teal); color: #fff; }
