@@ -27,11 +27,18 @@ body {
   overflow-x: hidden;
 }
 
-/* ── Custom cursor — hide default on pointer-fine (desktop) only ── */
+/* Hide cursor ONLY when custom cursor is active */
 @media (pointer: fine) {
-  *, *::before, *::after {
-    cursor: none !important;
+  body.custom-cursor-enabled {
+    cursor: none;
   }
+
+  body.custom-cursor-enabled * {
+    cursor: none;
+  }
+}
+a, button {
+  cursor: pointer; /* fallback if cursor disabled */
 }
 
 /* ── Scrollbar ── */

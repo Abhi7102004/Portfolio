@@ -14,6 +14,20 @@ export default function App() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
   }, []);
+  useEffect(() => {
+    const isFinePointer = window.matchMedia("(pointer: fine)").matches;
+    const isWideScreen = window.innerWidth > 768;
+  
+    const enable = isFinePointer && isWideScreen;
+  
+    if (enable) {
+      document.body.classList.add("custom-cursor-enabled");
+    } else {
+      document.body.classList.remove("custom-cursor-enabled");
+    }
+  
+    setIsDesktop(enable);
+  }, []);
 
   return (
     <main style={{ overflowX: "hidden" }}>

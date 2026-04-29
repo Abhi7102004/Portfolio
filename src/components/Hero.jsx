@@ -275,7 +275,6 @@ export default function Hero({ onIntroComplete }) {
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
-        /* Responsive padding: small on mobile, moderate on tablet, comfortable on desktop */
         padding: "6rem 1.25rem 5rem",
         maxWidth: 1600,
         margin: "0 auto",
@@ -324,34 +323,45 @@ export default function Hero({ onIntroComplete }) {
           Hi there, I&apos;m
         </motion.p>
 
-        {/* Name */}
+        {/* Name — Abhishek */}
         <div style={{ overflow: "hidden", lineHeight: 1 }}>
           <motion.h1
             initial={{ y: "108%" }}
             animate={introDone ? { y: 0 } : {}}
             transition={{ duration: 0.9, delay: 0.22, ease: EXPO }}
             style={{
-              fontFamily: "'Syne',sans-serif", fontWeight: 800,
-              /* Key fix: clamp starts from a larger min so name doesn't get clipped on mobile */
+              fontFamily: "'Syne', 'Helvetica Neue', Arial, sans-serif",
+              fontWeight: 800,
               fontSize: "clamp(3rem, 12vw, 5.8rem)",
-              lineHeight: 0.92, letterSpacing: "-0.03em", color: "#0E0E0D",
+              lineHeight: 0.92,
+              letterSpacing: "-0.03em",
+              color: "#0E0E0D",
               margin: 0,
+              fontSynthesis: "none",
+              WebkitFontSmoothing: "antialiased",
             }}
           >
             Abhishek
           </motion.h1>
         </div>
 
+        {/* Name — Yadav. */}
         <div style={{ overflow: "hidden", lineHeight: 1, marginBottom: "1.75rem" }}>
           <motion.h1
             initial={{ y: "108%" }}
             animate={introDone ? { y: 0 } : {}}
             transition={{ duration: 0.9, delay: 0.34, ease: EXPO }}
             style={{
-              fontFamily: "'Instrument Serif',serif", fontWeight: 400, fontStyle: "italic",
+              fontFamily: "'Instrument Serif', Georgia, 'Times New Roman', serif",
+              fontWeight: 400,
+              fontStyle: "italic",
               fontSize: "clamp(3rem, 12vw, 5.8rem)",
-              lineHeight: 0.92, letterSpacing: "-0.01em", color: "#0D9488",
+              lineHeight: 0.92,
+              letterSpacing: "-0.01em",
+              color: "#0D9488",
               margin: 0,
+              fontSynthesis: "none",
+              WebkitFontSmoothing: "antialiased",
             }}
           >
             Yadav.
@@ -511,6 +521,16 @@ export default function Hero({ onIntroComplete }) {
           #home > div {
             padding-left: 2.5rem !important;
             padding-right: 2.5rem !important;
+          }
+        }
+
+        /* Fix font rendering on mobile before web fonts load */
+        @media (max-width: 999px) {
+          #home h1 {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            font-synthesis: none;
+            text-rendering: optimizeLegibility;
           }
         }
       `}</style>
