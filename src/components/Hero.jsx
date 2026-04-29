@@ -36,27 +36,11 @@ function useTypewriter(words, speed = 72, pause = 2000) {
 }
 
 const TERMINAL_STEPS = [
-  {
-    cmd: "init portfolio.config",
-    outputs: [{ text: "[ok]   config loaded" }],
-  },
-  {
-    cmd: "load user.details",
-    outputs: [{ text: "[ok]   profile fetched" }],
-  },
-  {
-    cmd: "load user.{experience,skills,projects}",
-    outputs: [{ text: "[ok]   modules resolved  (3/3)" }],
-  },
-  {
-    cmd: "verify user.profile",
-    outputs: [{ text: "[ok]   integrity check passed" }],
-  },
-  {
-    cmd: "launch portfolio",
-    outputs: [],
-    isLaunch: true,
-  },
+  { cmd: "init portfolio.config",               outputs: [{ text: "[ok]   config loaded" }] },
+  { cmd: "load user.details",                   outputs: [{ text: "[ok]   profile fetched" }] },
+  { cmd: "load user.{experience,skills,projects}", outputs: [{ text: "[ok]   modules resolved  (3/3)" }] },
+  { cmd: "verify user.profile",                 outputs: [{ text: "[ok]   integrity check passed" }] },
+  { cmd: "launch portfolio",                    outputs: [], isLaunch: true },
 ]
 
 function TerminalIntro({ onDone }) {
@@ -323,46 +307,25 @@ export default function Hero({ onIntroComplete }) {
           Hi there, I&apos;m
         </motion.p>
 
-        {/* Name — Abhishek */}
+        {/* ── NAME: Abhishek ── */}
         <div style={{ overflow: "hidden", lineHeight: 1 }}>
           <motion.h1
+            className="hero-name-first"
             initial={{ y: "108%" }}
             animate={introDone ? { y: 0 } : {}}
             transition={{ duration: 0.9, delay: 0.22, ease: EXPO }}
-            style={{
-              fontFamily: "'Syne', 'Helvetica Neue', Arial, sans-serif",
-              fontWeight: 800,
-              fontSize: "clamp(3rem, 12vw, 5.8rem)",
-              lineHeight: 0.92,
-              letterSpacing: "-0.03em",
-              color: "#0E0E0D",
-              margin: 0,
-              fontSynthesis: "none",
-              WebkitFontSmoothing: "antialiased",
-            }}
           >
             Abhishek
           </motion.h1>
         </div>
 
-        {/* Name — Yadav. */}
+        {/* ── NAME: Yadav. ── */}
         <div style={{ overflow: "hidden", lineHeight: 1, marginBottom: "1.75rem" }}>
           <motion.h1
+            className="hero-name-last"
             initial={{ y: "108%" }}
             animate={introDone ? { y: 0 } : {}}
             transition={{ duration: 0.9, delay: 0.34, ease: EXPO }}
-            style={{
-              fontFamily: "'Instrument Serif', Georgia, 'Times New Roman', serif",
-              fontWeight: 400,
-              fontStyle: "italic",
-              fontSize: "clamp(3rem, 12vw, 5.8rem)",
-              lineHeight: 0.92,
-              letterSpacing: "-0.01em",
-              color: "#0D9488",
-              margin: 0,
-              fontSynthesis: "none",
-              WebkitFontSmoothing: "antialiased",
-            }}
           >
             Yadav.
           </motion.h1>
@@ -462,7 +425,7 @@ export default function Hero({ onIntroComplete }) {
           ))}
         </motion.div>
 
-        {/* Code block — desktop only, absolutely positioned */}
+        {/* Code block — desktop only */}
         <motion.pre
           className="code-block"
           initial={{ opacity: 0, x: 28 }}
@@ -506,32 +469,50 @@ export default function Hero({ onIntroComplete }) {
       </div>
 
       <style>{`
-        /* Code block: only show when there's enough horizontal space */
+        /* ── MOBILE: use pure system fonts — guaranteed to render correctly ── */
+        .hero-name-first {
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+          font-weight: 800;
+          font-size: clamp(3rem, 12vw, 5.8rem);
+          line-height: 0.92;
+          letter-spacing: -0.03em;
+          color: #0E0E0D;
+          margin: 0;
+          -webkit-font-smoothing: antialiased;
+        }
+
+        .hero-name-last {
+          font-family: Georgia, "Times New Roman", Times, serif;
+          font-weight: 400;
+          font-style: italic;
+          font-size: clamp(3rem, 12vw, 5.8rem);
+          line-height: 0.92;
+          letter-spacing: -0.01em;
+          color: #0D9488;
+          margin: 0;
+          -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── DESKTOP: switch to the nice web fonts ── */
+        @media (min-width: 1000px) {
+          .hero-name-first {
+            font-family: 'Syne', 'Helvetica Neue', Arial, sans-serif;
+          }
+          .hero-name-last {
+            font-family: 'Instrument Serif', Georgia, serif;
+          }
+        }
+
+        /* Code block: only show on desktop */
         .code-block { display: none !important; }
         @media (min-width: 1000px) { .code-block { display: block !important; } }
 
-        /* Ensure section padding scales nicely across breakpoints */
+        /* Padding scale */
         @media (min-width: 640px) {
-          #home > div {
-            padding-left: 2rem !important;
-            padding-right: 2rem !important;
-          }
+          #home > div { padding-left: 2rem !important; padding-right: 2rem !important; }
         }
         @media (min-width: 1000px) {
-          #home > div {
-            padding-left: 2.5rem !important;
-            padding-right: 2.5rem !important;
-          }
-        }
-
-        /* Fix font rendering on mobile before web fonts load */
-        @media (max-width: 999px) {
-          #home h1 {
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            font-synthesis: none;
-            text-rendering: optimizeLegibility;
-          }
+          #home > div { padding-left: 2.5rem !important; padding-right: 2.5rem !important; }
         }
       `}</style>
     </section>
