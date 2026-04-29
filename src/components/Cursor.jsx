@@ -1,96 +1,101 @@
-import React, { useEffect, useState } from "react"
-import { motion, useMotionValue, useSpring } from "framer-motion"
+import React, { useEffect, useRef } from "react";
+
+const TRAIL_LEN = 25;
 
 export default function Cursor() {
-  const mx = useMotionValue(-200)
-  const my = useMotionValue(-200)
-
-  /* Dot follows instantly */
-  const dotX = useSpring(mx, { stiffness: 1200, damping: 60 })
-  const dotY = useSpring(my, { stiffness: 1200, damping: 60 })
-
-  /* Ring follows with spring lag */
-  const ringX = useSpring(mx, { stiffness: 260, damping: 28 })
-  const ringY = useSpring(my, { stiffness: 260, damping: 28 })
-
-  const [hover,   setHover]   = useState(false)
-  const [click,   setClick]   = useState(false)
-  const [visible, setVisible] = useState(false)
+  const canvasRef = useRef(null);
+  const mouse = useRef({ x: 0, y: 0 });
+  const trail = useRef([]);
+  const rafRef = useRef(null);
 
   useEffect(() => {
-    /* Only mount on pointer-fine (desktop) devices */
-    if (window.matchMedia("(pointer: coarse)").matches) return
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-    const onMove = (e) => {
-      mx.set(e.clientX)
-      my.set(e.clientY)
-      setVisible(true)
-    }
-    const onOver = (e) => {
-      setHover(!!e.target.closest(
-        "a, button, [role='button'], input, textarea, select, label, [data-hover]"
-      ))
-    }
-    const onDown  = () => setClick(true)
-    const onUp    = () => setClick(false)
-    const onLeave = () => setVisible(false)
-    const onEnter = () => setVisible(true)
+    const ctx = canvas.getContext("2d");
 
-    window.addEventListener("mousemove",  onMove)
-    window.addEventListener("mouseover",  onOver)
-    window.addEventListener("mousedown",  onDown)
-    window.addEventListener("mouseup",    onUp)
-    window.addEventListener("mouseleave", onLeave)
-    window.addEventListener("mouseenter", onEnter)
+    const resize = () => {
+      if (!canvas) return;
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+
+    resize();
+    window.addEventListener("resize", resize);
+
+    // initialize trail
+    trail.current = Array.from({ length: TRAIL_LEN }, () => ({
+      x: 0,
+      y: 0,
+    }));
+
+    const move = (e) => {
+      mouse.current.x = e.clientX;
+      mouse.current.y = e.clientY;
+    };
+
+    window.addEventListener("mousemove", move);
+
+    const lerp = (a, b, n) => a + (b - a) * n;
+
+    const animate = () => {
+      if (!canvas || !ctx) return;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      trail.current[0].x = lerp(trail.current[0].x, mouse.current.x, 0.35);
+      trail.current[0].y = lerp(trail.current[0].y, mouse.current.y, 0.35);
+
+      for (let i = 1; i < TRAIL_LEN; i++) {
+        trail.current[i].x = lerp(
+          trail.current[i].x,
+          trail.current[i - 1].x,
+          0.35
+        );
+        trail.current[i].y = lerp(
+          trail.current[i].y,
+          trail.current[i - 1].y,
+          0.35
+        );
+      }
+
+      trail.current.forEach((p, i) => {
+        const t = 1 - i / TRAIL_LEN;
+        const size = 4 * t;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(13,148,136,${t * 0.7})`;
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, size * 3, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(13,148,136,${t * 0.08})`;
+        ctx.fill();
+      });
+
+      rafRef.current = requestAnimationFrame(animate);
+    };
+
+    rafRef.current = requestAnimationFrame(animate);
 
     return () => {
-      window.removeEventListener("mousemove",  onMove)
-      window.removeEventListener("mouseover",  onOver)
-      window.removeEventListener("mousedown",  onDown)
-      window.removeEventListener("mouseup",    onUp)
-      window.removeEventListener("mouseleave", onLeave)
-      window.removeEventListener("mouseenter", onEnter)
-    }
-  }, [mx, my])
-
-  if (!visible) return null
+      window.removeEventListener("mousemove", move);
+      window.removeEventListener("resize", resize);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
 
   return (
-    <>
-      {/* ── Lagging outer ring ── */}
-      <motion.div
-        style={{
-          position: "fixed",
-          top: 0, left: 0,
-          x: ringX, y: ringY,
-          translateX: "-50%", translateY: "-50%",
-          pointerEvents: "none",
-          zIndex: 99998,
-          borderRadius: "50%",
-          border: `1.5px solid ${hover ? "#0D9488" : "rgba(13,148,136,0.55)"}`,
-          background: hover ? "rgba(13,148,136,0.07)" : "transparent",
-          width:  hover ? 48 : click ? 20 : 34,
-          height: hover ? 48 : click ? 20 : 34,
-          transition: "width 0.18s ease, height 0.18s ease, border-color 0.2s ease, background 0.2s ease",
-        }}
-      />
-
-      {/* ── Precise inner dot ── */}
-      <motion.div
-        style={{
-          position: "fixed",
-          top: 0, left: 0,
-          x: dotX, y: dotY,
-          translateX: "-50%", translateY: "-50%",
-          pointerEvents: "none",
-          zIndex: 99999,
-          borderRadius: "50%",
-          background: "#0D9488",
-          width:  hover ? 9 : click ? 3 : 5,
-          height: hover ? 9 : click ? 3 : 5,
-          transition: "width 0.14s ease, height 0.14s ease",
-        }}
-      />
-    </>
-  )
+    <canvas
+      ref={canvasRef}
+      style={{
+        position: "fixed",
+        inset: 0,
+        pointerEvents: "none",
+        zIndex: 99999,
+      }}
+    />
+  );
 }
+
